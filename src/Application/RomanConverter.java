@@ -2,7 +2,7 @@ package Application;
 
 import java.util.ArrayList;
 
-import static java.lang.Integer.parseInt;
+import static Application.RomanConstants.ROMAN_CHAR_LIST;
 
 public class RomanConverter extends AbstractConverter {
     @Override

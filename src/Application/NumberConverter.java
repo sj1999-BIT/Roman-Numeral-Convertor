@@ -2,6 +2,8 @@ package Application;
 
 import java.util.ArrayList;
 
+import static Application.RomanConstants.*;
+
 public class NumberConverter extends AbstractConverter {
 
     @Override
