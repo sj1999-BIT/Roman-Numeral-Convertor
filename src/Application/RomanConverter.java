@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import static java.lang.Integer.parseInt;
 
 public class RomanConverter extends AbstractConverter {
-    public RomanConverter() {
-        super("roman Converter");
-    }
-
     @Override
     public boolean isInputValid(String input) {
         // Check if the string is a valid number and does not start with 0

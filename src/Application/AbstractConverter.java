@@ -7,12 +7,6 @@ import java.util.HashSet;
 
 public abstract class AbstractConverter implements ConverterInterface{
 
-    private String name = "";
-
-    public AbstractConverter(String name) {
-        this.name = name;
-    }
-
     public static final char[] ROMAN_CHAR_LIST = {'I','V', 'X', 'L', 'C', 'D', 'M'};
 
     public static final HashMap<Character, Integer> MAP_ROMAN_CHAR_TO_MAGNITUDE = new HashMap<Character, Integer>() {{
@@ -66,7 +60,4 @@ public abstract class AbstractConverter implements ConverterInterface{
         return magnitude * 2;
     }
 
-    public String getName() {
-        return this.name;
-    }
 }

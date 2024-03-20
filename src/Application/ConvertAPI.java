@@ -7,8 +7,8 @@ import Application.RomanConverter;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class ConvertAPI {
-    private static AbstractConverter romanConverter = new RomanConverter();
-    private static AbstractConverter numberConverter = new NumberConverter();
+    private static final AbstractConverter romanConverter = new RomanConverter();
+    private static final AbstractConverter numberConverter = new NumberConverter();
 
     public static String convert(String userInput) throws Exception {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text

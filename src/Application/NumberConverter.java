@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 public class NumberConverter extends AbstractConverter {
 
-    public NumberConverter() {
-        super("numeral Converter");
-    }
-
     @Override
     public boolean isInputValid(String input) {
         String regex = "^[IVXLCDM]*$";
@@ -45,16 +41,10 @@ public class NumberConverter extends AbstractConverter {
                 expectedMaxRomanVal = curVal;
             }else if (curVal > expectedMaxRomanVal){
                 // only one case where same mag and expectVal increase, need to end the substring now
-                // value is a 4 or a 9
                 result.add(input.substring(curStrStartPos, curCharPos+1));
                 curStrStartPos = curCharPos+1; // cur Char is included
 
                 if (curCharPos+1 >= input.length()) break;
-
-//                // next value must be of lower magnitude
-//                if (MAP_ROMAN_CHAR_TO_MAGNITUDE.get(input.charAt(curCharPos+1)) >= expectedMagnitude)
-//                    throw new Exception("Invalid increase in Magnitude at pos " + String.valueOf(curCharPos+1) +
-//                            " of " + input);
 
                 expectedMagnitude = MAP_ROMAN_CHAR_TO_MAGNITUDE.get(input.charAt(curCharPos+1));
                 expectedMaxRomanVal = MAP_ROMAN_CHAR_TO_VALUE.get(input.charAt(curCharPos+1));
@@ -81,17 +71,17 @@ public class NumberConverter extends AbstractConverter {
             int curVal = MAP_ROMAN_CHAR_TO_VALUE.get(input.charAt(i));
             if (curVal > prevVal) {
                 if (!canValIncrease) throw new Exception("INVALID SYNTAX: " + input);
-//                if (MAP_ROMAN_CHAR_TO_MAGNITUDE.get(input.charAt(i)) > MAP_ROMAN_CHAR_TO_MAGNITUDE.get(input.charAt(i-1)) + 1)
-//                    throw new Exception("INVALID VALUE FOR CONVERSION: " + input);
                 result = curVal - prevVal;
             } else {
                 result += curVal;
                 canValIncrease = false;
             }
             if (curVal == prevVal) {
+                // only one valued Char at each magnitude can repeat
                 if (!REPEATABLE_ROMAN.contains(input.charAt(i))) throw new Exception("Cannot repeat: " +
                         input.charAt(i) + "in current input: "+ input);
                 repeatCount++;
+                // cannot have more than 3 consecutive repeats
                 if (repeatCount > 2) throw new Exception("TWO MANY REPEATS: " + input);
             }
         }
@@ -105,21 +95,5 @@ public class NumberConverter extends AbstractConverter {
             result += Integer.parseInt(curInput);
         }
         return String.valueOf(result);
-
-//        StringBuilder sb = new StringBuilder();
-//        int remainingLen = convertedInput.get(0).length();
-//        for (String curStr : convertedInput) {
-//            while (remainingLen > curStr.length()) {
-//                sb.append('0');
-//                remainingLen--;
-//            }
-//            sb.append(curStr.charAt(0));
-//            remainingLen--;
-//        }
-//        while (remainingLen > 0) {
-//            sb.append('0');
-//            remainingLen--;
-//        }
-//        return sb.toString();
     }
 }
