@@ -10,6 +10,13 @@ public class ConvertAPI {
     private static final AbstractConverter romanConverter = new RomanConverter();
     private static final AbstractConverter numberConverter = new NumberConverter();
 
+    /**
+     * Takes in user input, pass it through both converter and returns output if its valid for one
+     * of the converter
+     * @param userInput String containing values to be converted, can be either number or ROMAN
+     * @return Strring output of the converted value
+     * @throws Exception if the value has valid semantics but caused error during the conversion.
+     */
     public static String convert(String userInput) throws Exception {
         AbstractConverter[] converters = {romanConverter, numberConverter};
         String result = "INVALID";

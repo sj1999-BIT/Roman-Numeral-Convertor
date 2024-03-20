@@ -2,9 +2,6 @@ package Application;
 
 import java.util.ArrayList;
 
-/**
- * First iteration, only values without underline: input integer below 5000
- */
 public interface ConverterInterface {
 
     // check if input is syntax-valid, can still be semantically invalid.

@@ -20,6 +20,14 @@ public class ConvertorUI {
             "INVALID: if input is not Roman or Numeral, output return INVALID\n" +
             "ERROR: input is valid, but out of the valid range of the converter.";
 
+    private static final String defaultGray = "Enter ROMAN/NUMERALS here...";
+
+    /**
+     * Standardised creation of panel with label and textfield for converter UI
+     * @param labelStr label for the input
+     * @param textField field to place input
+     * @return JPanel object
+     */
     private static JPanel createPanelWithLabelAndField(String labelStr, JTextField textField) {
         //Create a panel
         JPanel curPanel = new JPanel(new SpringLayout());
@@ -38,7 +46,11 @@ public class ConvertorUI {
     }
 
     /**
-     *  Creates actionalistener: takes input from textfield, pass into converter, return output into the correct field
+     * Creates actionalistener: takes input from textfield, pass into converter, return output into the correct field
+     * @param inputField textField containing user inputs
+     * @param outputField textField to present the converted input
+     * @return an ActionListener which takes user input and pass them into the converterAPI for converion, then present
+     * in output field.
      */
     private static ActionListener createConverterActionListener(JTextField inputField, JTextField outputField) {
         return new ActionListener() {
@@ -55,89 +67,15 @@ public class ConvertorUI {
         };
     }
 
-    private static JPanel createConverterPanel() {
-        String defaultGray = "Enter ROMAN/NUMERALS here...";
-        //Create a panel for input
-        JTextField textField = new JTextField(defaultGray);
-
-        textField.setForeground(Color.GRAY);
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            boolean update = false;
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                    SwingUtilities.invokeLater(() -> {
-                        if (!update && !textField.getText().equals(defaultGray)) {
-                            String input = "";
-                            try {
-                                Document doc = e.getDocument();
-                                input = doc.getText(e.getOffset(), e.getLength());
-                                update = true;
-                            } catch (BadLocationException ex) {
-                                ex.printStackTrace();
-                            }
-                            textField.setText(input);
-                            textField.setForeground(Color.BLACK);
-                        }
-                    });
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    if (update && textField.getText().isEmpty()) {
-                        textField.setText(defaultGray);
-                        textField.setForeground(Color.GRAY);
-                        update = false;
-                    }
-                });
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                // Not needed for plain text components
-            }
-        });
-
-        // Add a focus listener to the JTextField
-//        textField.addFocusListener(new FocusListener() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                if (!textField.getText().equals("Enter ROMAN/NUMERALS here...")) {
-//                    textField.setText("");
-//                    textField.setForeground(Color.BLACK);
-//                }
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                if (textField.getText().isEmpty()) {
-//                    textField.setForeground(Color.GRAY);
-//                    textField.setText("Enter ROMAN/NUMERALS here...");
-//                }
-//            }
-//        });
-
-        JPanel inputPanel = createPanelWithLabelAndField("input: ", textField);
-
-        // create a button to initiate conversion
+    /**
+     * Creates a JPanel with the button located in the centre.
+     * @param button target button
+     * @return JPanel Object
+     */
+    private static JPanel createCentredButtonPanel(JButton button) {
         JPanel buttonPanel = new JPanel(new SpringLayout());
-        JButton curConverterButton = new JButton("CONVERT");
-
-//        curConverterButton.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createLineBorder(Color.BLACK, 1),  // Outer border
-//                BorderFactory.createEmptyBorder(1, 1, 1, 1)  // Inner border (padding)
-//
-//        ));
-
-        curConverterButton.setPreferredSize(new Dimension(200, 30));
-
-        Font newButtonFont=new Font(curConverterButton.getFont().getName(),curConverterButton.getFont().getStyle(),10);
-
-        //Set JButton font using new created font
-        curConverterButton.setFont(newButtonFont);
-
         buttonPanel.add(new JPanel());
-        buttonPanel.add(curConverterButton, BorderLayout.CENTER);
+        buttonPanel.add(button);
         buttonPanel.add(new JPanel());
 
         //Lay out the panel.
@@ -158,33 +96,105 @@ public class ConvertorUI {
                 0, 0,        //initX, initY
                 0, 0);       //xPad, yPad
 
+        return finalButtonPanel;
+    }
 
+    /**
+     * Creates a DocumentListener to implement default text function to input field such as showing defualt gray text
+     * when empty.
+     * @param inputTextField target inputfield
+     * @return DocumentListener.
+     */
+    private static DocumentListener createDefaultInputDocListener(JTextField inputTextField) {
+        return new DocumentListener() {
+            boolean update = false;
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    // any input cause the default gray text to be cleared, leaving only user input
+                    if (!update && !inputTextField.getText().equals(defaultGray)) {
+                        String input = "";
+                        try {
+                            Document doc = e.getDocument();
+                            input = doc.getText(e.getOffset(), e.getLength());
+                            update = true;
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                        inputTextField.setText(input);
+                        inputTextField.setForeground(Color.BLACK);
+                    }
+                });
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                // when input field cleared, add in the default gray text
+                SwingUtilities.invokeLater(() -> {
+                    if (update && inputTextField.getText().isEmpty()) {
+                        inputTextField.setText(defaultGray);
+                        inputTextField.setForeground(Color.GRAY);
+                        update = false;
+                    }
+                });
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // Not needed for plain text components
+            }
+        };
+    }
+
+    /**
+     * Actual Panel containing all of the ConverterUI functions.
+     * @return JPanel Object
+     */
+    private static JPanel createConverterPanel() {
+
+        // create input text field
+        JTextField textField = new JTextField(defaultGray);
+        textField.setForeground(Color.GRAY);
+        // add default input feature
+        textField.getDocument().addDocumentListener(createDefaultInputDocListener(textField));
+
+        //Create a panel for input
+        JPanel inputPanel = createPanelWithLabelAndField("input: ", textField);
+
+        // create a button to initiate conversion
+        JButton curConverterButton = new JButton("CONVERT");
+        // a border to improve looks
+        curConverterButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK, 2),  // Outer border
+                BorderFactory.createEmptyBorder(1, 1, 1, 1)  // Inner border (padding)
+        ));
+
+        Font newButtonFont=new Font(curConverterButton.getFont().getName(),curConverterButton.getFont().getStyle(),10);
+        //Set JButton font using new created font
+        curConverterButton.setFont(newButtonFont);
+        JPanel buttonPanel = createCentredButtonPanel(curConverterButton);
 
         //Create output Panel
         JTextField textField2 = new JTextField(10);
         JPanel outputPanel = createPanelWithLabelAndField("output:", textField2);
 
-        // add action listener
+        // add action listener to overall UI
         ActionListener curActionListener = createConverterActionListener(textField, textField2);
+        // add to button for user click input
         curConverterButton.addActionListener(curActionListener);
+        // add to textfield to response to enter
         textField.addActionListener(curActionListener);
 
         // combine all components into a single panel
         JPanel overallPanel = new JPanel(new SpringLayout());
-//        overallPanel.add(inputPanel, BorderLayout.NORTH);
-//        overallPanel.add(buttonPanel, BorderLayout.CENTER);
-//        overallPanel.add(outputPanel, BorderLayout.SOUTH);
         overallPanel.add(inputPanel);
-        overallPanel.add(finalButtonPanel);
+        overallPanel.add(buttonPanel);
         overallPanel.add(outputPanel);
-
         //Lay out the panel.
         SpringUtilities.makeGrid(overallPanel,
                 3, 1, //rows, cols
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
-
-
 
         //Make sure we have nice window decorations.
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -195,7 +205,6 @@ public class ConvertorUI {
 
         //Set up the content pane.
         overallPanel.setOpaque(true);  //content panes must be opaque
-
         overallPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1),  // Outer border
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)  // Inner border (padding)
@@ -204,6 +213,10 @@ public class ConvertorUI {
         return overallPanel;
     }
 
+    /**
+     * Creates a toolbar with a help button for the converterUI.
+     * @return JToolBar object
+     */
     private static JToolBar createToolBarForConverter() {
         // Create a toolbar
         JToolBar toolBar = new JToolBar("Toolbar");
@@ -221,7 +234,6 @@ public class ConvertorUI {
 
             // Create a text area with some long text
             JTextArea textArea = new JTextArea(helpText);
-
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
 
@@ -232,18 +244,9 @@ public class ConvertorUI {
             // Add the scroll pane to the dialog
             dialog.add(scrollPane);
 
-            // Pack the dialog to adjust its size to its content
-//            dialog.pack();
-
             // Show the dialog
             dialog.setVisible(true);
 
-            // Create a label with some text
-//            JLabel label = new JLabel(helpText);
-//            dialog.add(label);
-
-            // Show the dialog
-//            dialog.setVisible(true);
         });
 
         return toolBar;
@@ -254,75 +257,37 @@ public class ConvertorUI {
      * this method should be invoked from the
      * event-dispatching thread.
      */
-    private static void createAndShowGUI() {
-
-        JPanel overallPanel = new JPanel(new SpringLayout());
-
-        //Make sure we have nice window decorations.
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        //Create and set up the window.
-        JFrame frame = new JFrame("RomanNumeralConverter");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        overallPanel.add(createToolBarForConverter(), BorderLayout.PAGE_START);
-
-        overallPanel.add(createConverterPanel());
-
-        SpringUtilities.makeCompactGrid(overallPanel,
-                2, 1, //rows, cols
-                6, 6,        //initX, initY
-                6, 6);       //xPad, yPad
-
-        //Set up the content pane.
-        overallPanel.setOpaque(true);  //content panes must be opaque
-        frame.setContentPane(overallPanel);
-
-        frame.setSize(400, 300);
-
-        //Display the window.
-//        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void createUI() {
+    public static void createAndShowGUI() {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                JPanel overallPanel = new JPanel(new SpringLayout());
+
+                //Make sure we have nice window decorations.
+                JFrame.setDefaultLookAndFeelDecorated(true);
+                //Create and set up the window.
+                JFrame frame = new JFrame("RomanNumeralConverter");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                overallPanel.add(createToolBarForConverter(), BorderLayout.PAGE_START);
+
+                overallPanel.add(createConverterPanel());
+
+                SpringUtilities.makeCompactGrid(overallPanel,
+                        2, 1, //rows, cols
+                        6, 6,        //initX, initY
+                        6, 6);       //xPad, yPad
+
+                //Set up the content pane.
+                overallPanel.setOpaque(true);  //content panes must be opaque
+                frame.setContentPane(overallPanel);
+
+                frame.setSize(400, 300);
+
+                //Display the window.
+                frame.setVisible(true);
             }
         });
-    }
-
-    public static void setContainerSize(Container parent,
-                                        int pad) {
-        SpringLayout layout = (SpringLayout) parent.getLayout();
-        Component[] components = parent.getComponents();
-        Spring maxHeightSpring = Spring.constant(0);
-        SpringLayout.Constraints pCons = layout.getConstraints(parent);
-
-        //Set the container's right edge to the right edge
-        //of its rightmost component + padding.
-        Component rightmost = components[components.length - 1];
-        SpringLayout.Constraints rCons =
-                layout.getConstraints(rightmost);
-        pCons.setConstraint(
-                SpringLayout.EAST,
-                Spring.sum(Spring.constant(pad),
-                        rCons.getConstraint(SpringLayout.EAST)));
-
-        //Set the container's bottom edge to the bottom edge
-        //of its tallest component + padding.
-        for (int i = 0; i < components.length; i++) {
-            SpringLayout.Constraints cons =
-                    layout.getConstraints(components[i]);
-            maxHeightSpring = Spring.max(maxHeightSpring,
-                    cons.getConstraint(
-                            SpringLayout.SOUTH));
-        }
-        pCons.setConstraint(
-                SpringLayout.SOUTH,
-                Spring.sum(Spring.constant(pad),
-                        maxHeightSpring));
     }
 }
