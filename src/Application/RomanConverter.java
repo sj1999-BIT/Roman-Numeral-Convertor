@@ -56,14 +56,15 @@ public class RomanConverter extends AbstractConverter {
         int curMagRomanSmallCharIndex = this.getMagnitudeOneRomeIndex(input.length()-1);
         char oneRomeChar;
         try {
-            // if curVal is 1 to 3, just repeat one value
             oneRomeChar = ROMAN_CHAR_LIST[curMagRomanSmallCharIndex];
         }catch (Exception e) {
+            // magnitude is above current limit, cannot find in the list
             throw new Exception("Value too large!");
         }
 
         StringBuilder sb = new StringBuilder();
         if (curVal < 4) {
+            // if curVal is 1 to 3, just repeat one value
             return this.repeatChar(oneRomeChar, curVal);
         }
 
@@ -80,7 +81,7 @@ public class RomanConverter extends AbstractConverter {
 
         // if its 4, has a one rome char before the five rome char
         if (curVal == 4) sb.append(oneRomeChar);
-        // all
+
         sb.append(fiveRomeChar);
 
         int repeatedOnes = curVal - 5;
@@ -88,7 +89,6 @@ public class RomanConverter extends AbstractConverter {
         sb.append(this.repeatChar(oneRomeChar, repeatedOnes));
 
         return sb.toString();
-//        char largerChar = ROMAN_CHAR_LIST[input.length()];
     }
 
     @Override
@@ -98,5 +98,11 @@ public class RomanConverter extends AbstractConverter {
             sb.append(str);
         }
         return sb.toString();
+    }
+
+    // returns the Rome one value representing one at current magnitude
+    // e.g. magnitude = 2, return 4, which in ROMAN_CHAR_LIST is C, represent 100 (magnitude 2)
+    public int getMagnitudeOneRomeIndex(int magnitude) {
+        return magnitude * 2;
     }
 }

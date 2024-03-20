@@ -33,9 +33,7 @@ public abstract class AbstractConverter implements ConverterInterface{
 
 
     // standardize for both converters to follow
-    // pipeline to convert
     public String convertFull(String input) throws Exception {
-        if (!this.isInputValid(input)) throw new Exception("Invalid input");
         ArrayList<String> inputList  = this.parse(input);
         for (int i = 0; i < inputList.size(); i++) {
             // convert each input into correct value
@@ -54,10 +52,6 @@ public abstract class AbstractConverter implements ConverterInterface{
         return sb.toString();
     }
 
-    // returns the Rome one value representing one at current magnitude
-    // e.g. magnitude = 2, return 4, which in ROMAN_CHAR_LIST is C, represent 100 (magnitude 2)
-    public int getMagnitudeOneRomeIndex(int magnitude) {
-        return magnitude * 2;
-    }
+
 
 }

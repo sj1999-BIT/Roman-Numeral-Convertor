@@ -11,10 +11,9 @@ public class ConvertAPI {
     private static final AbstractConverter numberConverter = new NumberConverter();
 
     public static String convert(String userInput) throws Exception {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
         AbstractConverter[] converters = {romanConverter, numberConverter};
         String result = "INVALID";
+        // go through each converter to check if input can be converted
         for (AbstractConverter converter : converters) {
             if (!converter.isInputValid(userInput)) continue;
             result = converter.convertFull(userInput);
