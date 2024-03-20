@@ -13,6 +13,9 @@ RomanNumeralConverter can take in either Roman Values or Numeral values and conv
 
 
 
+## Testing
+
+Unit testing and integrated testing are both performed on the application.
 ## Authors
 
 - [@Sj1999-BIT](https://github.com/sj1999-BIT/)
